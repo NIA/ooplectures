@@ -1,0 +1,111 @@
+\documentclass[a4paper, 14pt, titlepage]{extarticle}
+  \usepackage{cmap}
+  \usepackage[hidelinks,pdftex,unicode]{hyperref}
+  \usepackage{mathtext} % для кириллицы в формулах
+  \usepackage[T2A]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[english,russian]{babel}
+  \usepackage{indentfirst}
+  \usepackage{cite}
+  \usepackage{amsmath} % для \eqref
+  \usepackage{amssymb} % для \leqslant
+  \usepackage{amsthm} % для \pushQED
+  \usepackage{color} % пока только для TODO:
+  \usepackage[pdftex]{graphicx}
+  \usepackage{subfig}
+  \usepackage{numprint}
+  \usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
+  \usepackage{datetime}
+  \graphicspath{{../img/}{../../img/}}
+  \frenchspacing
+
+  \DeclareSymbolFont{T2Aletters}{T2A}{cmr}{m}{it} % кириллица в формулах курсивом
+
+  \addto\captionsrussian{
+    \renewcommand\contentsname{Содержание}
+    % перекрываю \refname, чтобы список литературы сам добавлял себя в оглавление
+    \let\oldrefname\refname
+    \renewcommand\refname{\addcontentsline{toc}{section}{\oldrefname}\oldrefname}
+  }
+
+  \newcommand{\underscore}[1]{\hbox to#1{\hrulefill}}
+  \newcommand{\todo}[1]{\textbf{\textcolor{red}{TODO: #1}}}
+  \newcommand{\note}[1]{\textit{Примечание: #1}}
+  \newcommand{\eng}[1]{{\English #1}}
+
+  % обёртка с моими настройками поверх figure:
+  % \begin{myfigure}{подпись}{fig:label} ... \end{myfigure}
+  \newenvironment{myfigure}[2]%
+    {\pushQED{\caption{#1} \label{#2}} % push caption & label
+     \begin{figure}[!htb]\centering } %
+    {  \popQED % pop caption & label
+     \end{figure}}
+
+  % вставка картинки: \figure[params]{подпись}{file}
+  % создаёт label вида fig:file
+  \newcommand{\includefigure}[3][]{
+    \begin{myfigure}{#2}{fig:#3}
+      \includegraphics[#1]{#3}
+    \end{myfigure}
+  }
+
+  % вставка subfigure внутри myfigure:
+  % \subfigure[params]{подпись}{file}
+  \newcommand{\subfigure}[3][]{
+    \subfloat[#2]{\label{fig:#3}\includegraphics[#1]{#3}}
+  }
+
+  \newcommand{\vect}[1]{\vec{#1}} % единое выделение векторов (стрелкой)
+  \newcommand{\matx}[1]{\mathbf{#1}} % единое выделение матриц (полужирным)
+  \newcommand{\transposed}{\top} % единый знак транспонирования (U+22A4 down tack)
+  \renewcommand{\le}{\leqslant} % <= с наклонной нижней перекладиной
+  \renewcommand{\ge}{\geqslant} % >= с наклонной нижней перекладиной
+
+  \linespread{1.3}
+
+  % русские буквы для списков и частей рисунка
+  \renewcommand{\theenumii}{(\asbuk{enumii})}
+  \renewcommand{\labelenumii}{\asbuk{enumii})}
+  \renewcommand{\thesubfigure}{\asbuk{subfigure}}
+
+  \setcounter{tocdepth}{3} % глубина оглавления
+
+  \bibliographystyle{gost780u}
+
+  \hyphenation{англ} % убрать перенос в этом сокращении
+
+  % алиас и настройки для numprint
+  \newcommand{\num}[1]{\numprint{#1}}
+  \npthousandsep{\,}
+  \npthousandthpartsep{}
+  \npdecimalsign{,}
+
+  \newcommand{\checkdate}[3]{({\Russian дата обращения: \formatdate{#1}{#2}{#3}})}
+
+  \newcommand{\strong}[1]{\textbf{#1}}
+
+  \author{И.\,А.\,Новиков}
+  \title{Лекция <<ООП в Ruby и Java>>}
+
+\begin{document}
+
+%----------------------- титульный лист ------------------------
+
+  \thispagestyle{empty}
+  \maketitle
+
+  \newpage
+
+  \section{Зачем П~--- ОО?}
+
+  Или, говоря по-русски, зачем нужно объектно-ориентированное программирование (ООП)?
+
+  Затем, что таково человеческое мышление:
+  \begin{itemize}
+    \item Компьютеру проще работать с \strong{числами}, адресами, инструкциями, в лучшем случае~--- с процедурами.
+    \item Человеку же привычнее выделять в окружающей реальности \strong{объекты}, путём абстракции
+    выделять их \strong{свойства} и способы \strong{взаимодействия} с~ними, а~также выделять общее и
+    \strong{классифицировать}.
+  \end{itemize}
+
+\end{document}
