@@ -16,11 +16,11 @@
   \usepackage{numprint}
   \usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
   \usepackage{datetime}
-  \usepackage{ulem} % красивые подчёркивания...
-    \normalem % ...но вернуть обратно курсив в \em, \emph
+  \usepackage[normalem]{ulem} % красивые подчёркивания, но обычный курсив в \em, \emph
   \usepackage{listings}
     \lstloadlanguages{Java, Ruby}
     \definecolor{dkgreen}{rgb}{0,0.6,0}
+    \definecolor{dkblue}{rgb}{0,0,0.6}
     \definecolor{maroon}{rgb}{0.5,0,0}
     \definecolor{ltgray}{rgb}{0.8,0.8,0.8}
     \lstset{extendedchars=true,    % включаем не латиницу
@@ -31,7 +31,8 @@
             stringstyle=\color{maroon}, % шрифт для строк
             keywordstyle=\bfseries\color{blue}, % шрифт для ключевых слов
             breaklines=true,       % включить авто переносы
-            breakatwhitespace=false % разрешить переносить не только по пробелу
+            breakatwhitespace=false, % разрешить переносить не только по пробелу
+            showstringspaces=false % не подчёркивать пробелы в строках
             }
 
   \graphicspath{{../img/}{../../img/}}
@@ -120,6 +121,7 @@
   % выделение примеров
   \newenvironment{example}%
     { \begin{indented} %
+        \color{dkgreen} %
         \small %
         \textbf{\underline{Пример:}} }%
     { \end{indented} }
@@ -127,6 +129,7 @@
   % выделение дополнительной, "продвинутой" информации, необязательной при первом прочтении
   \newenvironment{extrainfo}%
     { \begin{indented} %
+        \color{dkblue} %
         \small %
         \textbf{\textcircled{\footnotesize i}} }%
     { \end{indented} }
@@ -154,6 +157,7 @@
 
   \thispagestyle{empty}
   \maketitle
+  \todo{упоминание о том, какие базовые знания по языку требуются для этой лекции}
 
   \newpage
 
@@ -174,7 +178,7 @@
   \footnote{хотя есть ещё функциональные и логические! Не стоит про них забывать.}
   C++, C\#, Java, Python, Ruby...
 
-  \section{Основные понятия. Принцип Абстракции}
+  \section{Основные понятия. Принцип Абстракции}\label{sec:basic_concepts}
 
   Итак, человек выделяет объекты, \ie отделяет тот или иной объект от остальной реальности (и от
   других объектов, в частности). Общее определение объекта дать сложно, для программирования же
@@ -374,7 +378,7 @@
   привязанная к данному конкретному объекту. У другого объекта её значение может быть другим, и
   т.~д. Ещё такое поведение делает свойство похожим на \emph{поле} в таблице свойств, поэтому свойство
   также называют \define{полем} (field). Ещё его иногда называют переменной экземпляра
-  (\define{instance variable}).
+  (\define{\eng{instance variable}}).
 
   Поскольку переменные в Java объявляются заранее, а в Ruby~--- только при использовании, то это
   относится и к свойствам, из-за чего синтаксис работы с ними в Java и Ruby сильно отличается.
@@ -531,6 +535,171 @@
   \end{extrainfo}
 
   \subsection{Статические поля и методы}
+
+  Отдельный вид полей и методов~--- это \define{статические} поля и методы. Они, в отличие от
+  обычных, не связаны ни с каким объектом, а связаны с классом. Если обычное поле называют
+  переменной экземпляра (\eng{instance variable}), то статическое~--- переменной класса (\eng{class
+  variable}). При их использовании вместо переменной-объекта используется имя класса. Таким образом,
+  такое поле имеет как бы общее значение для всех объектов класса, так же и результат вызова
+  статического метода никак не зависит от состояния объектов этого класса, их может даже вообще ещё
+  не быть. Статическое поле~--- это, по сути, просто глобальная переменная, а статический метод~---
+  глобальная функция, только они объявлены в контексте класса.
+
+  \begin{halfpage}
+    \begin{lstlisting}[language=Java, title={Объявление static'ов в Java}, gobble=6, texcl]
+      class Person {
+        public final static String BIO_NAME
+            = "Homo Sapiens"; // (1)
+        public static long population
+            = 6000000000; // (2)
+        public static long malePopulation()
+        { // (3)
+          ...
+        }
+      }
+    \end{lstlisting}
+  \end{halfpage}
+  \begin{halfpage}
+    \begin{lstlisting}[language=Ruby, title={Объявление static'ов в Ruby}, gobble=6, texcl]
+      class Person
+        BIO_NAME = "Homo Sapiens" # (1)
+        # НЕТ (2)
+        def Person.malePopulation() # (3)
+        end
+        # ИЛИ
+        def self.malePopulation() # (3) \phantomsection \label{lst:static_self}
+        end
+
+      end
+    \end{lstlisting}
+  \end{halfpage}
+
+  Здесь (1)~--- это объявление статической константы, \ie неизменяемого статического поля; (2)~---
+  объявление переменной класса, \ie изменяемого статического поля (в Ruby оно не требуется, как и
+  для обычной переменной); (3)~--- объявление статического метода.
+
+  \begin{halfpage}
+    \begin{lstlisting}[language=Java, title={Использование static'ов в Java}, gobble=6, texcl]
+      String s = Person.BIO_NAME; // (4)
+      n = Person.malePopulation(); // (5)
+      long n = Person.population; // (6)
+      class Person {
+        public static malePopulation() {
+          return population/2; // (7)
+        }
+      }
+    \end{lstlisting}
+  \end{halfpage}
+  \begin{halfpage}
+    \begin{lstlisting}[language=Ruby, title={Использование static'ов в Ruby}, gobble=6, texcl]
+      s = Person::BIO_NAME # (4)
+      n = person.malePopulation() # (5)
+      # НЕТ (6)
+      class Person
+        def Person.male_population()
+          return @@population/2 # (7)
+        end
+      end
+    \end{lstlisting}
+  \end{halfpage}
+  
+  Здесь (4)~--- это использование статической константы (обратите внимание, что в Java используется
+  точка, как и для обычных полей и методов, а в Ruby~--- \inlinecode[Ruby]{::}), (5)~--- вызов
+  статического метода, (6)~--- использование статического поля вне класса, (7)~--- использование
+  статического поля изнутри класса (в Java при этом можно опускать имя класса и вместо
+  \inlinecode{Person.population} писать просто \inlinecode{population}). Здесь, так же как и в
+  случае с обычными полями, имеется значительное отличие Ruby от Java: напрямую статические поля
+  недоступны извне, для работы с~ними нужно использовать аксессоры. Их объявление будет выглядеть
+  аналогично тому, как это было для обычных полей, только и поле, и метод будут статическими:
+
+  \begin{halfpage}
+  \end{halfpage}
+  \begin{halfpage}
+    \begin{lstlisting}[language=Ruby, title={Статические аксессоры в Ruby}, gobble=6, texcl]
+      class Person
+        def Person.population()
+          return @@population
+        end
+        def Person.population=(value)
+          @@population = value
+        end
+        # инициализация (начальное значение)
+        @@population = 6000000000
+      end
+
+      # После этого можно писать
+      n = Person.population
+      Person.population = n
+    \end{lstlisting}
+  \end{halfpage}
+
+  Так же, как и в случае с обычными полями, последние две строчки выглядят, как прямой доступ к полю,
+  но на самом деле являются сокращённой записью вызова соответствующих методов, объявленных выше.
+  К~сожалению, в Ruby нет аналогов \inlinecode{attr_reader}, \inlinecode{attr_writer} и
+  \inlinecode{attr_accessor} для генерации аксессоров к статическим полям. Однако, в
+  библиотеке Active Support, являющейся частью фреймворка Ruby on Rails, таковые имеются. Называются
+  они так же, как вышеперечисленные, только с добавлением буквы \inlinecode{c} (от class) в начале: 
+  \inlinecode{cattr_reader} и т.п. Так что при использовании Rails (или отдельно Active Support) ими
+  можно пользоваться.
+
+  \begin{extrainfo}
+    Неожиданной особенностью статических полей в Ruby является то, что из значение является общим
+    не только для всех объектов данного класса, но и для всех объектов классов-наследников этого
+    класса. Иными словами, присваивая статическое поле с таким же именем в классе-наследнике, мы
+    тем самым изменяем и значение этого поля в классе-родителе (подробнее об этом можно почитать 
+    \href{http://apidock.com/rails/Class/cattr_accessor#624-Important-note}{\uline{здесь}}, на англ.
+    языке, там же описывается, как можно использовать вместо статических полей другую технику, чтобы
+    избежать проблемы). Что это значит, станет понятнее после прочтения следующей лекции о наследовании.
+  \end{extrainfo}
+
+  Поскольку статический метод, в отличие от обычного, вызывается не от объекта, а от класса, то в
+  него не передаётся ссылка на объект в виде \inlinecode[Java]{this}/\inlinecode[Ruby]{self}.
+  Поэтому в Java ключевое слово \inlinecode[Java]{this} вообще недоступно в теле статических методов,
+  а в Ruby \inlinecode[Ruby]{self} указывает на объект, описывающий текущий класс, \ie в данном
+  примере на \inlinecode{Person} (литералы классов в Ruby являются константными объектами системного
+  класса \inlinecode{Class}). Именно поэтому при объявлении статического метода перед его именем
+  можно вместо имени класса писать \inlinecode[Ruby]{self}, как это было показано выше \hyperref[lst:static_self]{(3)}.
+
+  В любом случае, из статического метода нельзя обращаться ни к каким полям и методам, не являющимся
+  также статическими.
+
+  \subsection{Создание новых объектов}
+
+  Как и говорилось раньше (см. \ref{sec:basic_concepts}), для определения класса, кроме уже
+  рассмотренных объявления имени класса, свойств и методов, нужно ещё описать способ создания новых
+  объектов. Это реализуется путём объявления специального метода, который самым первым будет вызван
+  от объекта, как только он создан~--- \define{конструктора}. Его объявление в обоих языках выглядит
+  как объявление метода со специальным именем. Имя это в Java и Ruby разное: в Java оно совпадает с
+  именем класса, а в Ruby оно фиксированное: \inlinecode[Ruby]{initialize}. В Java ещё одним
+  отличием конструктора от обычного метода является отсутствие возвращаемого типа.
+
+  \begin{halfpage}
+    \begin{lstlisting}[language=Java, title={Конструктор в Java}, gobble=6, texcl]
+      class Person {
+        public Person() {
+
+        }
+      }
+    \end{lstlisting}
+  \end{halfpage}
+  \begin{halfpage}
+    \begin{lstlisting}[language=Ruby, title={Конструктор в Ruby}, gobble=6, texcl]
+      class Person
+        def initialize()
+
+        end
+      end
+    \end{lstlisting}
+  \end{halfpage}
+
+  Выше был объявлен конструктор, который не принимает никаких аргументов и ничего не делает. Такой
+  простой конструктор можно даже не объявлять, он будет автоматически добавлен компилятором или
+  интерпретатором, если не будет объявлен другой.
+
+  На самом деле, конструктор обычно используется, чтобы инициализировать объект, \ie привести его в
+  рабочее начальное состояние: установить начальные значения свойств и произвести какие-то действия,
+  чётко привязанные к моменту его создания (например, зарегистрировать его в каком-то реестре,
+  записать в журнал о его создании и т.п.).
 
 \end{document}
 
