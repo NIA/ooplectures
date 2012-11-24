@@ -149,18 +149,54 @@
   
 
   \author{И.\,А.\,Новиков}
-  \title{Лекция <<ООП в Ruby и Java>>}
+  \title{Лекция <<Классы в Java и Ruby>>}
 
 \begin{document}
 
 %----------------------- титульный лист ------------------------
 
-  \thispagestyle{empty}
-  \maketitle
-  \todo{упоминание о том, какие базовые знания по языку требуются для этой лекции}
+  \begin{titlepage}
+  \begin{center}
+    Цикл лекций <<ООП в Java и Ruby>>\\
+    \url{https://github.com/NIA/ooplectures}
 
-  \newpage
+    \vspace{4cm}
+    
+    \includegraphics[height=5cm]{ruby-in-cup}
 
+    Иван Новиков
+
+    {\Large Классы в Java и Ruby}
+
+    Лекция №4
+
+    {\small Версия 0.2 от \today}
+
+  \end{center}
+
+    \begin{flushright}
+
+    \end{flushright}
+
+    \vspace{3cm}
+    
+    \begin{indented}
+      \small Для лучшего понимания содержимого лекции знание основ синтаксиса языков Java и Ruby,
+      на уровне главы 3 книги \eng{Core Java (C.\,Horstmann, G.\,Cornell)} и главы 2 части I книги
+      \eng{Programming Ruby: The Pragmatic Programmers' Guide (D. Thomas)} \emph{или} прочтение
+      предыдущих лекций.
+    \end{indented}
+
+    \vfill
+  
+  \begin{center}
+
+    Краснодар~--- 2012~год
+
+  \end{center}
+  \end{titlepage}
+
+%----------------------- лекция ------------------------
   \section{Зачем П~--- ОО?}
 
   Или, говоря по-русски, зачем нужно объектно-ориентированное программирование (ООП)?
@@ -612,8 +648,7 @@
   недоступны извне, для работы с~ними нужно использовать аксессоры. Их объявление будет выглядеть
   аналогично тому, как это было для обычных полей, только и поле, и метод будут статическими:
 
-  \begin{halfpage}
-  \end{halfpage}
+  \begin{center}
   \begin{halfpage}
     \begin{lstlisting}[language=Ruby, title={Статические аксессоры в Ruby}, gobble=6, texcl]
       class Person
@@ -632,6 +667,7 @@
       Person.population = n
     \end{lstlisting}
   \end{halfpage}
+  \end{center}
 
   Так же, как и в случае с обычными полями, последние две строчки выглядят, как прямой доступ к полю,
   но на самом деле являются сокращённой записью вызова соответствующих методов, объявленных выше.
